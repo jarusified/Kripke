@@ -242,6 +242,24 @@ if (ENABLE_CALIPER)
   endif()
 endif()
 
+
+option(ENABLE_DMV_PROFILER "Enable data movement tracking" FALSE)
+
+if (ENABLE_DMV_PROFILER)
+   if(EXISTS "${PROJECT_SOURCE_DIR}/tpl/dmv_profiler/CMakeLists.txt")
+   	     set(BUILD_SHARED_LIBS False CACHE BOOL "")
+	     add_subdirectory(tpl/dmv_profiler)
+	     include_directories(tpl/dmv_profiler/include)
+   else()
+	find_package(dmv_profiler REQUIRED)
+   endif()
+
+   blt_register_library(NAME dmv_profiler INCLUDES ${dmv_profiler_INCLUDE_DIR} LIBRARIES dmv_profiler)
+  set(KRIPKE_USE_DMV_PROFILER TRUE)
+
+  list(APPEND KRIPKE_DEPENDS dmv_profiler)
+endif()
+
 message(STATUS "Caliper support is ${KRIPKE_USE_CALIPER}")
 
 
